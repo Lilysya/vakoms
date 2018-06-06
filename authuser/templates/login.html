@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+ <h2>Login</h2>
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+    <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+<form method="post" action="{% url 'auth:login' %}">
+{% csrf_token %}
+
+<p>
+    {{ form.email.errors }}
+    {{ form.email.label_tag }}
+    {{ form.email }}
+</p>
+<p>
+    {{ form.password.errors }}
+    {{ form.password.label_tag }}
+    {{ form.password }}
+</p>
+
+
+<input type="submit" value="login" />
+</form>
+<div class="registration">
+    <span>Still not registered ?</span>
+    <a href="{% url 'auth:signup'%}">register</a>
+</div>
+
+
+
+{% endblock %}

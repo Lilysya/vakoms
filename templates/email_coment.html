@@ -1,0 +1,5 @@
+{% autoescape off %}
+    Hi {{ user.username }},
+    Your post has been commented,
+    http://{{ domain }}/post/{{post.id}}/
+{% endautoescape %}

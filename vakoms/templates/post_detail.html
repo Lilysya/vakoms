@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="post">
+        {% if post.published_date %}
+            <div class="date">
+                {{ post.published_date }}
+            </div>
+        {% endif %}
+        {% if user.is_authenticated and request.user.is_superuser%}
+            <a class="btn btn-default" href="{% url 'post_edit' pk=post.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+        {% endif %}
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.text|linebreaksbr }}</p>
+    </div>
+    <div class="comment">
+         {% if user.is_authenticated%}
+            <button type="button" class="btn btn-fill btn-default btn-xs" data-toggle="modal"
+                data-target="#CommentModal"><i
+                class="fa fa-plus-square"></i> Add comment
+            </button>
+         {%else%}
+        <a href="{% url 'auth:login' %}">Sign in to leave comments</a>
+        {%endif%}
+    </div>
+
+    <div class="comment_list">
+        {% for item in post.comment_set.all%}
+            <div class="item_comment">
+                <div class="comment__head">
+                    <span class="user-info"> {{item.author}}</span>
+                    <time class="comment__date-time"> {{item.created_date}}</time>
+                </div>
+
+            </div>
+                {{item.text}}
+        {%endfor%}
+    </div>
+
+
+<div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="CommentModalLabel">Add comment</h4>
+            </div>
+            <form name="add_weight" action="{% url 'add_comment' pk_post=post.id%}" method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                {{ add_comment.text }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<body>
+{% endblock %}
